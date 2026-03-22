@@ -385,12 +385,12 @@
     <div class="stat-label">Remaining</div>
   </div>
   <div class="stat-pill home">
-    <div class="stat-num" id="stat-home">10</div>
-    <div class="stat-label">🏠 Home Days</div>
+    <div class="stat-num" id="stat-home">–</div>
+    <div class="stat-label">🏠 Home Games</div>
   </div>
   <div class="stat-pill away">
-    <div class="stat-num" id="stat-away">7</div>
-    <div class="stat-label">✈️ Away Days</div>
+    <div class="stat-num" id="stat-away">–</div>
+    <div class="stat-label">✈️ Away Games</div>
   </div>
   <div class="stat-pill tourn">
     <div class="stat-num" id="stat-tourn">1</div>
@@ -1236,8 +1236,12 @@
 
     // Stats
     const gamesRemaining = totalGameDays - gamesPlayed;
+    const homeGames = gameCards.filter(c => c.classList.contains('game-home')).length;
+    const awayGames = gameCards.filter(c => c.classList.contains('game-away')).length;
     document.getElementById('stat-played').textContent    = gamesPlayed;
     document.getElementById('stat-remaining').textContent = gamesRemaining;
+    document.getElementById('stat-home').textContent      = homeGames;
+    document.getElementById('stat-away').textContent      = awayGames;
 
     // Progress bar
     const pct = totalGameDays > 0 ? Math.round((gamesPlayed / totalGameDays) * 100) : 0;
