@@ -173,6 +173,28 @@
       flex-wrap: wrap;
       gap: 10px;
     }
+    /* ── WEATHER STRIP: remove to undo ── */
+    #weather-strip {
+      display: none;
+      margin-top: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .wx-icon { font-size: 1.6rem; line-height: 1; }
+    .wx-temp { font-size: 1.2rem; font-weight: 800; color: #fff; }
+    .wx-desc { font-size: 0.78rem; color: #bee3f8; }
+    .wx-detail {
+      font-size: 0.75rem; color: #90cdf4;
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .wx-loading { font-size: 0.78rem; color: #90cdf4; font-style: italic; }
+    /* ── END WEATHER STRIP CSS ── */
+
     .next-up-countdown {
       display: inline-block;
       background: #f6ad55;
@@ -537,6 +559,9 @@
   <div class="next-up-name" id="next-up-name"></div>
   <div class="next-up-meta" id="next-up-meta"></div>
   <div class="next-up-countdown" id="next-up-countdown"></div>
+  <!-- ── WEATHER STRIP: remove to undo ── -->
+  <div id="weather-strip"><span class="wx-loading">🌡️ Loading forecast…</span></div>
+  <!-- ── END WEATHER STRIP ── -->
 </div>
 
 <!-- ── CALENDAR VIEW TOGGLE: Remove this block to undo ── -->
@@ -747,7 +772,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-04-06" data-gametype="home" data-title="SLE JV Softball vs Northville" data-start="20260406T160000" data-end="20260406T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-04-06" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs Northville" data-start="20260406T160000" data-end="20260406T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Mon</div><div class="date-num">6</div></div>
         <div class="info-col">
@@ -783,7 +808,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-04-08" data-gametype="home" data-title="SLE JV Softball vs Walled Lake Central" data-start="20260408T160000" data-end="20260408T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-04-08" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs Walled Lake Central" data-start="20260408T160000" data-end="20260408T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Wed</div><div class="date-num">8</div></div>
         <div class="info-col">
@@ -801,7 +826,7 @@
       </div>
     </div>
 
-    <div class="card game-away" data-date="2026-04-14" data-gametype="away" data-title="SLE JV Softball @ Walled Lake Northern" data-start="20260414T160000" data-end="20260414T190000" data-location="Walled Lake Northern High School, 380 W Pontiac Trail, Commerce Township, MI 48390" data-directions="https://www.google.com/maps/dir/?api=1&destination=Walled+Lake+Northern+High+School,+380+W+Pontiac+Trail,+Commerce+Township,+MI+48390" onclick="toggleCard(this)">
+    <div class="card game-away" data-date="2026-04-14" data-gametype="away" data-lat="42.5617" data-lon="-83.4737" data-title="SLE JV Softball @ Walled Lake Northern" data-start="20260414T160000" data-end="20260414T190000" data-location="Walled Lake Northern High School, 380 W Pontiac Trail, Commerce Township, MI 48390" data-directions="https://www.google.com/maps/dir/?api=1&destination=Walled+Lake+Northern+High+School,+380+W+Pontiac+Trail,+Commerce+Township,+MI+48390" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Tues</div><div class="date-num">14</div></div>
         <div class="info-col">
@@ -838,7 +863,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-04-17" data-gametype="home" data-title="SLE JV Softball vs Dexter JV" data-start="20260417T160000" data-end="20260417T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-04-17" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs Dexter JV" data-start="20260417T160000" data-end="20260417T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Fri</div><div class="date-num">17</div></div>
         <div class="info-col">
@@ -856,7 +881,7 @@
       </div>
     </div>
 
-    <div class="card game-away" data-date="2026-04-18" data-gametype="away" data-title="SLE JV Softball @ Oxford" data-start="20260418T100000" data-end="20260418T130000" data-location="Oxford High School, 745 N Oxford Rd, Oxford, MI 48371" onclick="toggleCard(this)">
+    <div class="card game-away" data-date="2026-04-18" data-gametype="away" data-lat="42.8266" data-lon="-83.2588" data-title="SLE JV Softball @ Oxford" data-start="20260418T100000" data-end="20260418T130000" data-location="Oxford High School, 745 N Oxford Rd, Oxford, MI 48371" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Sat</div><div class="date-num">18</div></div>
         <div class="info-col">
@@ -911,7 +936,7 @@
       </div>
     </div>
 
-    <div class="card game-away" data-date="2026-04-22" data-gametype="away" data-title="SLE JV Softball @ Saline" data-start="20260422T160000" data-end="20260422T190000" data-location="Saline High School, 7190 N Maple Rd, Saline, MI 48176" onclick="toggleCard(this)">
+    <div class="card game-away" data-date="2026-04-22" data-gametype="away" data-lat="42.1693" data-lon="-83.7716" data-title="SLE JV Softball @ Saline" data-start="20260422T160000" data-end="20260422T190000" data-location="Saline High School, 7190 N Maple Rd, Saline, MI 48176" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Weds</div><div class="date-num">22</div></div>
         <div class="info-col">
@@ -930,7 +955,7 @@
       </div>
     </div>
 
-    <div class="card game-away" data-date="2026-04-23" data-gametype="away" data-title="SLE JV Softball @ Brighton" data-start="20260423T160000" data-end="20260423T190000" data-location="Brighton High School, 7878 Brighton Rd, Brighton, MI 48116" onclick="toggleCard(this)">
+    <div class="card game-away" data-date="2026-04-23" data-gametype="away" data-lat="42.5278" data-lon="-83.7805" data-title="SLE JV Softball @ Brighton" data-start="20260423T160000" data-end="20260423T190000" data-location="Brighton High School, 7878 Brighton Rd, Brighton, MI 48116" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Thurs</div><div class="date-num">23</div></div>
         <div class="info-col">
@@ -949,7 +974,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-04-27" data-gametype="home" data-title="SLE JV Softball vs Howell" data-start="20260427T160000" data-end="20260427T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-04-27" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs Howell" data-start="20260427T160000" data-end="20260427T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Mon</div><div class="date-num">27</div></div>
         <div class="info-col">
@@ -967,7 +992,7 @@
       </div>
     </div>
 
-    <div class="card game-away" data-date="2026-04-28" data-gametype="away" data-title="SLE JV Softball @ Dexter" data-start="20260428T160000" data-end="20260428T190000" data-location="Dexter High School, 2200 N Parker Rd, Dexter, MI 48130" onclick="toggleCard(this)">
+    <div class="card game-away" data-date="2026-04-28" data-gametype="away" data-lat="42.3649" data-lon="-83.8862" data-title="SLE JV Softball @ Dexter" data-start="20260428T160000" data-end="20260428T190000" data-location="Dexter High School, 2200 N Parker Rd, Dexter, MI 48130" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Tues</div><div class="date-num">28</div></div>
         <div class="info-col">
@@ -1004,7 +1029,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-04-30" data-gametype="home" data-title="SLE JV Softball vs Richmond" data-start="20260430T160000" data-end="20260430T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-04-30" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs Richmond" data-start="20260430T160000" data-end="20260430T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Thurs</div><div class="date-num">30</div></div>
         <div class="info-col">
@@ -1030,7 +1055,7 @@
   <div class="month-header">May</div>
   <div class="cards">
 
-    <div class="card game-neutral game-home" data-date="2026-05-02" data-gametype="neutral" data-title="SLE JV Softball: JV Home Round Robin" data-start="20260502T100000" data-end="20260502T140000" data-location="South Lyon East HS – Both Fields, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-neutral game-home" data-date="2026-05-02" data-gametype="neutral" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball: JV Home Round Robin" data-start="20260502T100000" data-end="20260502T140000" data-location="South Lyon East HS – Both Fields, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Sat</div><div class="date-num">2</div></div>
         <div class="info-col">
@@ -1067,7 +1092,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-05-07" data-gametype="home" data-title="SLE JV Softball vs Pinckney" data-start="20260507T160000" data-end="20260507T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-05-07" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs Pinckney" data-start="20260507T160000" data-end="20260507T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Thurs</div><div class="date-num">7</div></div>
         <div class="info-col">
@@ -1103,7 +1128,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-05-12" data-gametype="home" data-title="SLE JV Softball vs Lakeland" data-start="20260512T160000" data-end="20260512T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-05-12" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs Lakeland" data-start="20260512T160000" data-end="20260512T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Tues</div><div class="date-num">12</div></div>
         <div class="info-col">
@@ -1139,7 +1164,7 @@
       </div>
     </div>
 
-    <div class="card game-away" data-date="2026-05-14" data-gametype="away" data-title="SLE JV Softball @ Livonia Stevenson" data-start="20260514T160000" data-end="20260514T190000" data-location="Stevenson High School, 34200 W 8 Mile Rd, Livonia, MI 48152" onclick="toggleCard(this)">
+    <div class="card game-away" data-date="2026-05-14" data-gametype="away" data-lat="42.4211" data-lon="-83.4016" data-title="SLE JV Softball @ Livonia Stevenson" data-start="20260514T160000" data-end="20260514T190000" data-location="Stevenson High School, 34200 W 8 Mile Rd, Livonia, MI 48152" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Thurs</div><div class="date-num">14</div></div>
         <div class="info-col">
@@ -1158,7 +1183,7 @@
       </div>
     </div>
 
-    <div class="card game-neutral" data-date="2026-05-16" data-gametype="neutral" data-title="SLE JV Softball: Dexter JV Invite" data-start="20260516T100000" data-end="20260516T150000" data-location="Creekside School, Dexter, MI" onclick="toggleCard(this)">
+    <div class="card game-neutral" data-date="2026-05-16" data-gametype="neutral" data-lat="42.3649" data-lon="-83.8862" data-title="SLE JV Softball: Dexter JV Invite" data-start="20260516T100000" data-end="20260516T150000" data-location="Creekside School, Dexter, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Sat</div><div class="date-num">16</div></div>
         <div class="info-col">
@@ -1195,7 +1220,7 @@
       </div>
     </div>
 
-    <div class="card game-home" data-date="2026-05-19" data-gametype="home" data-title="SLE JV Softball vs South Lyon" data-start="20260519T160000" data-end="20260519T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-home" data-date="2026-05-19" data-gametype="home" data-lat="42.4658" data-lon="-83.6513" data-title="SLE JV Softball vs South Lyon" data-start="20260519T160000" data-end="20260519T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Tues</div><div class="date-num">19</div></div>
         <div class="info-col">
@@ -1213,7 +1238,7 @@
       </div>
     </div>
 
-    <div class="card game-away" data-date="2026-05-20" data-gametype="away" data-title="SLE JV Softball @ Allen Park" data-start="20260520T160000" data-end="20260520T190000" data-location="Allen Park High School, 9601 Vine Ave, Allen Park, MI 48101" onclick="toggleCard(this)">
+    <div class="card game-away" data-date="2026-05-20" data-gametype="away" data-lat="42.2577" data-lon="-83.2098" data-title="SLE JV Softball @ Allen Park" data-start="20260520T160000" data-end="20260520T190000" data-location="Allen Park High School, 9601 Vine Ave, Allen Park, MI 48101" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Wed</div><div class="date-num">20</div></div>
         <div class="info-col">
@@ -1431,6 +1456,8 @@
       else if (days === 1) countdownEl.textContent = '⏳ Tomorrow!';
       else                 countdownEl.textContent = `⏳ ${days} days away`;
 
+      // ── WEATHER: remove this line to undo ──
+      loadWeather(nextUpCard);
 
     } else {
       // Season over
@@ -1440,6 +1467,78 @@
         '<div class="next-up-name">Great season, Eagles!</div>';
     }
   })();
+
+  // ── WEATHER FEATURE: Remove this block to undo ───────────────────────
+  function wmoInfo(code) {
+    if (code === 0)               return { icon: '☀️',  desc: 'Clear' };
+    if (code <= 2)                return { icon: '🌤️', desc: 'Mostly Clear' };
+    if (code === 3)               return { icon: '☁️',  desc: 'Overcast' };
+    if (code <= 48)               return { icon: '🌫️', desc: 'Foggy' };
+    if (code <= 57)               return { icon: '🌦️', desc: 'Drizzle' };
+    if (code <= 67)               return { icon: '🌧️', desc: 'Rain' };
+    if (code <= 77)               return { icon: '❄️',  desc: 'Snow' };
+    if (code <= 82)               return { icon: '🌧️', desc: 'Showers' };
+    if (code <= 99)               return { icon: '⛈️',  desc: 'Thunderstorm' };
+    return { icon: '🌡️', desc: 'Unknown' };
+  }
+
+  async function loadWeather(card) {
+    const lat  = card.dataset.lat;
+    const lon  = card.dataset.lon;
+    const date = card.dataset.date;
+    if (!lat || !lon || !date) return;
+
+    // Parse game hour from data-start e.g. "20260406T160000" → 16
+    const startStr = card.dataset.start || '';
+    const hourMatch = startStr.match(/T(\d{2})/);
+    const gameHour = hourMatch ? parseInt(hourMatch[1]) : 16;
+
+    // Only show forecast if game is within 16 days
+    const gameDate = new Date(date + 'T00:00:00');
+    const today    = new Date(); today.setHours(0,0,0,0);
+    const daysAway = Math.round((gameDate - today) / 86400000);
+    if (daysAway < 0 || daysAway > 14) {
+      document.getElementById('weather-strip').style.display = 'none';
+      return;
+    }
+
+    const strip = document.getElementById('weather-strip');
+    strip.style.display = 'flex';
+    strip.innerHTML = '<span class="wx-loading">🌡️ Loading forecast…</span>';
+
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+        `&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m` +
+        `&temperature_unit=fahrenheit&wind_speed_unit=mph` +
+        `&timezone=America%2FDetroit&start_date=${date}&end_date=${date}`;
+
+      const res  = await fetch(url);
+      const data = await res.json();
+      if (!data.hourly || !data.hourly.time) throw new Error('No data');
+
+      // Find the hourly slot closest to game time
+      let idx = data.hourly.time.findIndex(t => new Date(t).getHours() >= gameHour);
+      if (idx < 0) idx = gameHour; // fallback
+
+      const temp   = Math.round(data.hourly.temperature_2m[idx]);
+      const precip = data.hourly.precipitation_probability[idx];
+      const code   = data.hourly.weathercode[idx];
+      const wind   = Math.round(data.hourly.windspeed_10m[idx]);
+      const { icon, desc } = wmoInfo(code);
+
+      strip.innerHTML =
+        `<div class="wx-icon">${icon}</div>` +
+        `<div class="wx-temp">${temp}°F</div>` +
+        `<div class="wx-desc">${desc}</div>` +
+        `<div class="wx-detail">` +
+          `<span>💧 ${precip}% chance of rain</span>` +
+          `<span>💨 Wind ${wind} mph</span>` +
+        `</div>`;
+    } catch(e) {
+      strip.style.display = 'none';
+    }
+  }
+  // ── END WEATHER FEATURE ───────────────────────────────────────────────
 
   // ── CALENDAR VIEW FUNCTIONS: Remove this block to undo ───────────────
   function switchView(view) {
