@@ -1236,8 +1236,13 @@
 
     // Stats
     const gamesRemaining = totalGameDays - gamesPlayed;
-    const homeGames = gameCards.filter(c => c.classList.contains('game-home')).length;
-    const awayGames = gameCards.filter(c => c.classList.contains('game-away')).length;
+    const sumGames = cards => cards.reduce((total, c) => {
+      const badge = c.querySelector('.games-badge');
+      const n = badge ? parseInt(badge.textContent) : 1;
+      return total + (isNaN(n) ? 1 : n);
+    }, 0);
+    const homeGames = sumGames(gameCards.filter(c => c.classList.contains('game-home')));
+    const awayGames = sumGames(gameCards.filter(c => c.classList.contains('game-away')));
     document.getElementById('stat-played').textContent    = gamesPlayed;
     document.getElementById('stat-remaining').textContent = gamesRemaining;
     document.getElementById('stat-home').textContent      = homeGames;
