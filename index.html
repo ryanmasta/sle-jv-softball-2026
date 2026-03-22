@@ -1258,9 +1258,9 @@
     document.getElementById('stat-tourn').textContent     = tournGames;
 
     // Progress bar
-    const pct = totalGameDays > 0 ? Math.round((gamesPlayed / totalGameDays) * 100) : 0;
+    const pct = totalGames > 0 ? Math.round((gamesPlayed / totalGames) * 100) : 0;
     document.getElementById('progress-fill').style.width = pct + '%';
-    document.getElementById('progress-text').textContent = `${gamesPlayed} of ${totalGameDays} game days played`;
+    document.getElementById('progress-text').textContent = `${gamesPlayed} of ${totalGames} games played`;
     // Position the softball at the progress percentage, clamped so it stays on the track
     const ball = document.getElementById('softball-ball');
     // Use clamp so the ball never falls off either edge
