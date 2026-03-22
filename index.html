@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 South Lyon East JV Softball Schedule</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+      padding: 24px 16px 40px;
+    }
+
+    /* ── Header ── */
+    .header-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 4px;
+    }
+    .school-logo {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      flex-shrink: 0;
+      /* multiply blend makes white pixels disappear, black logo stays */
+      mix-blend-mode: multiply;
+      opacity: 0.85;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #1a365d;
+      margin-bottom: 0;
+    }
+    .subtitle {
+      text-align: center;
+      color: #4a5568;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+    /* Subtle watermark logo behind the next-up banner */
+    #next-up-banner {
+      position: relative;
+      overflow: hidden;
+    }
+    .banner-logo {
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      pointer-events: none;
+      /* invert to white, then screen blend makes white glow on dark bg */
+      filter: invert(1);
+      mix-blend-mode: screen;
+      opacity: 0.15;
+    }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .stat-pill {
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 18px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.09);
+      min-width: 80px;
+    }
+    .stat-pill .stat-num {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #1a365d;
+      line-height: 1;
+    }
+    .stat-pill .stat-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #718096;
+      margin-top: 2px;
+    }
+    .stat-pill.home  .stat-num { color: #276749; }
+    .stat-pill.away  .stat-num { color: #2a4365; }
+    .stat-pill.tourn .stat-num { color: #553c9a; }
+
+    /* ── Progress Bar ── */
+    .progress-wrap {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.09);
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #4a5568;
+      margin-bottom: 7px;
+    }
+    .progress-track {
+      background: #e2e8f0;
+      border-radius: 999px;
+      height: 12px;
+      overflow: visible;
+      position: relative;
+      margin: 16px 0 6px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #276749, #38a169, #68d391);
+      transition: width 1s ease;
+      position: relative;
+    }
+    /* Softball ball wrapper — static slider icon */
+    .ball-wrap {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-55%);
+      z-index: 10;
+      /* left set by JS */
+    }
+    .softball-svg {
+      width: 30px;
+      height: 30px;
+      display: block;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+    }
+
+    /* ── Next Up Banner ── */
+    #next-up-banner {
+      display: none;
+      background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(26,54,93,0.3);
+    }
+    .next-up-eyebrow {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #90cdf4;
+      margin-bottom: 4px;
+    }
+    .next-up-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .next-up-meta {
+      font-size: 0.82rem;
+      color: #bee3f8;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .next-up-countdown {
+      display: inline-block;
+      background: #f6ad55;
+      color: #7b341e;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-top: 8px;
+    }
+
+    /* ── Filter Buttons ── */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .filter-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #fff;
+      color: #4a5568;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { background: #e2e8f0; }
+    .filter-btn.active { background: #1a365d; color: #fff; box-shadow: 0 2px 6px rgba(26,54,93,0.3); }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #4a5568;
+    }
+    .dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Month sections ── */
+    .month-section { margin-bottom: 28px; }
+    .month-header {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #2d3748;
+      border-bottom: 3px solid #3182ce;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+    }
+    .cards { display: flex; flex-direction: column; gap: 8px; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      border-left: 5px solid #cbd5e0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.15s, opacity 0.3s;
+    }
+    .card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.13); }
+
+    .card.game-home    { border-left-color: #38a169; }
+    .card.game-away    { border-left-color: #3182ce; }
+    .card.game-neutral { border-left-color: #805ad5; }
+    .card.special      { border-left-color: #dd6b20; }
+    .card.noschool     { border-left-color: #e53e3e; background: #fff5f5; }
+    .card.break        { border-left-color: #d69e2e; background: #fffff0; }
+
+    /* Past events */
+    .card.past { opacity: 0.42; }
+    .card.past .card-main { filter: grayscale(0.3); }
+
+    /* Next up pulse */
+    .card.next-up {
+      border-left-width: 6px;
+      box-shadow: 0 0 0 3px rgba(49,130,206,0.25), 0 3px 10px rgba(0,0,0,0.12);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(49,130,206,0.2), 0 3px 10px rgba(0,0,0,0.1); }
+      50%       { box-shadow: 0 0 0 5px rgba(49,130,206,0.35), 0 3px 14px rgba(0,0,0,0.15); }
+    }
+
+    /* Card main row */
+    .card-main {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+    .date-col { text-align: center; }
+    .dow { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: #718096; letter-spacing: 0.08em; }
+    .date-num { font-size: 1.2rem; font-weight: 800; color: #2d3748; line-height: 1.1; }
+
+    .info-col {}
+    .event-name { font-size: 0.97rem; font-weight: 700; color: #1a202c; margin-bottom: 3px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 0.72rem; font-weight: 600;
+      padding: 2px 7px; border-radius: 999px;
+    }
+    .tag.time    { background: #ebf8ff; color: #2b6cb0; }
+    .tag.loc     { background: #f0fff4; color: #276749; }
+    .tag.home    { background: #c6f6d5; color: #22543d; }
+    .tag.away    { background: #bee3f8; color: #2a4365; }
+    .tag.neutral { background: #e9d8fd; color: #553c9a; }
+    .tag.all     { background: #fed7e2; color: #702459; }
+
+    .right-col { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+    .games-badge {
+      display: inline-block;
+      background: #2c5282; color: #fff;
+      font-size: 0.75rem; font-weight: 800;
+      padding: 3px 9px; border-radius: 8px;
+    }
+    .expand-icon {
+      font-size: 0.7rem; color: #a0aec0;
+      transition: transform 0.2s;
+      user-select: none;
+    }
+    .card.expanded .expand-icon { transform: rotate(180deg); }
+
+    /* Card actions (revealed on expand) */
+    .card-actions {
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 14px 12px 14px;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 10px;
+    }
+    .card.expanded .card-actions { display: flex; }
+
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.75rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 999px;
+      text-decoration: none;
+      transition: background 0.15s;
+      border: none; cursor: pointer;
+    }
+    .action-btn.directions {
+      background: #ebf8ff; color: #2b6cb0;
+      border: 1px solid #bee3f8;
+    }
+    .action-btn.directions:hover { background: #bee3f8; }
+    .action-btn.calendar {
+      background: #f0fff4; color: #276749;
+      border: 1px solid #c6f6d5;
+    }
+    .action-btn.calendar:hover { background: #c6f6d5; }
+    .action-btn.loc-info {
+      background: #faf5ff; color: #553c9a;
+      border: 1px solid #e9d8fd;
+      cursor: default;
+    }
+
+    /* Past badge */
+    .past-badge {
+      font-size: 0.65rem; font-weight: 700;
+      background: #e2e8f0; color: #718096;
+      padding: 1px 7px; border-radius: 999px;
+    }
+
+    @media (max-width: 480px) {
+      .card-main { grid-template-columns: 58px 1fr auto; }
+      h1 { font-size: 1.3rem; }
+    }
+
+    .print-note {
+      text-align: center; font-size: 0.75rem;
+      color: #a0aec0; margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header-wrap">
+  <img class="school-logo" src="https://cache.bsnsports.com/comp/sls/get/43/9228?f=jpg&sid=9228&ts=1638206562" alt="South Lyon East logo" onerror="this.style.display='none'">
+  <h1>2026 South Lyon East JV Softball</h1>
+  <img class="school-logo" src="https://cache.bsnsports.com/comp/sls/get/43/9228?f=jpg&sid=9228&ts=1638206562" alt="South Lyon East logo" onerror="this.style.display='none'">
+</div>
+<p class="subtitle">Tap any card for directions &amp; calendar options</p>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat-pill">
+    <div class="stat-num" id="stat-played">–</div>
+    <div class="stat-label">Games Played</div>
+  </div>
+  <div class="stat-pill">
+    <div class="stat-num" id="stat-remaining">–</div>
+    <div class="stat-label">Remaining</div>
+  </div>
+  <div class="stat-pill home">
+    <div class="stat-num" id="stat-home">10</div>
+    <div class="stat-label">🏠 Home Days</div>
+  </div>
+  <div class="stat-pill away">
+    <div class="stat-num" id="stat-away">7</div>
+    <div class="stat-label">✈️ Away Days</div>
+  </div>
+  <div class="stat-pill tourn">
+    <div class="stat-num" id="stat-tourn">1</div>
+    <div class="stat-label">🏆 Tournament</div>
+  </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Season Progress</span>
+    <span id="progress-text">Loading…</span>
+  </div>
+  <div class="progress-track" id="progress-track">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    <div class="ball-wrap" id="softball-ball" style="left:0%">
+      <img class="softball-svg" src="data:image/png;base64,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" alt="softball">
+    </div>
+  </div>
+</div>
+
+<!-- Next Up Banner -->
+<div id="next-up-banner">
+  <img class="banner-logo" src="https://cache.bsnsports.com/comp/sls/get/43/9228?f=jpg&sid=9228&ts=1638206562" alt="" onerror="this.style.display='none'">
+  <div class="next-up-eyebrow">⚡ Next Up</div>
+  <div class="next-up-name" id="next-up-name"></div>
+  <div class="next-up-meta" id="next-up-meta"></div>
+  <div class="next-up-countdown" id="next-up-countdown"></div>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+  <button class="filter-btn active" data-filter="all"    onclick="filterCards('all')">All</button>
+  <button class="filter-btn"        data-filter="games"  onclick="filterCards('games')">🎯 Games Only</button>
+  <button class="filter-btn"        data-filter="home"   onclick="filterCards('home')">🏠 Home</button>
+  <button class="filter-btn"        data-filter="away"   onclick="filterCards('away')">✈️ Away</button>
+  <button class="filter-btn"        data-filter="events" onclick="filterCards('events')">📅 Events</button>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><div class="dot" style="background:#38a169"></div> Home Game</div>
+  <div class="legend-item"><div class="dot" style="background:#3182ce"></div> Away Game</div>
+  <div class="legend-item"><div class="dot" style="background:#805ad5"></div> Tournament</div>
+  <div class="legend-item"><div class="dot" style="background:#dd6b20"></div> Team Event</div>
+  <div class="legend-item"><div class="dot" style="background:#e53e3e"></div> No Practice</div>
+</div>
+
+<!-- ===== MARCH ===== -->
+<div class="month-section" id="month-march">
+  <div class="month-header">March</div>
+  <div class="cards">
+
+    <div class="card special" data-date="2026-03-13" data-title="SLE JV Softball: Parent Meeting" data-start="20260313T180000" data-end="20260313T190000" data-location="Aux Gym Classroom, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Fri</div><div class="date-num">13</div></div>
+        <div class="info-col">
+          <div class="event-name">Parent Meeting</div>
+          <div class="meta">
+            <span class="tag time">⏰ 6:00 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Aux Gym Classroom</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-03-14" data-title="SLE JV Softball: SLJL Clinic" data-start="20260314T104500" data-end="20260314T130000" data-location="Action Sports, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Sat</div><div class="date-num">14</div></div>
+        <div class="info-col">
+          <div class="event-name">SLJL Clinic</div>
+          <div class="meta">
+            <span class="tag time">⏰ 10:45 AM – 1 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Action Sports</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-03-19" data-title="SLE JV Softball: Media Day" data-start="20260319T150000" data-end="20260319T170000" data-location="South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Thurs</div><div class="date-num">19</div></div>
+        <div class="info-col">
+          <div class="event-name">Media Day</div>
+          <div class="meta">
+            <span class="tag time">⏰ 3:00 – 5:00 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card noschool" data-date="2026-03-20" data-title="SLE JV Softball: No Practice" data-start="20260320" data-end="20260321" data-location="" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Fri</div><div class="date-num">20</div></div>
+        <div class="info-col">
+          <div class="event-name">🚫 No Practice</div>
+          <div class="meta"><span class="tag all">ALL teams</span></div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card break" data-date="2026-03-21" data-title="SLE JV Softball: Spring Break – No Practice" data-start="20260321" data-end="20260330" data-location="" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">All<br>Week</div><div class="date-num" style="font-size:0.82rem">21–29</div></div>
+        <div class="info-col">
+          <div class="event-name">🌴 Spring Break – No Practice</div>
+          <div class="meta"><span class="tag all">ALL teams</span></div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-03-30" data-title="SLE JV Softball: Field Cleanup Day" data-start="20260330" data-end="20260331" data-location="South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Mon</div><div class="date-num">30</div></div>
+        <div class="info-col">
+          <div class="event-name">Field Cleanup Day</div>
+          <div class="meta">
+            <span class="tag time">⏰ TBD</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== APRIL ===== -->
+<div class="month-section" id="month-april">
+  <div class="month-header">April</div>
+  <div class="cards">
+
+    <div class="card special" data-date="2026-04-01" data-title="SLE JV Softball: Ethos S&C" data-start="20260401T143000" data-end="20260401T153000" data-location="Weight Room, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Weds</div><div class="date-num">1</div></div>
+        <div class="info-col">
+          <div class="event-name">Ethos S&amp;C Before Prac</div>
+          <div class="meta">
+            <span class="tag time">⏰ 2:30 – 3:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Weight Room</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-04-02" data-title="SLE JV Softball: VSN Pictures" data-start="20260402" data-end="20260403" data-location="South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Thurs</div><div class="date-num">2</div></div>
+        <div class="info-col">
+          <div class="event-name">VSN Pictures</div>
+          <div class="meta">
+            <span class="tag time">⏰ TBD</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-04-02" data-title="SLE JV Softball: Fill Eggs for Fundraiser" data-start="20260402T173000" data-end="20260402T193000" data-location="South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Thurs</div><div class="date-num">2</div></div>
+        <div class="info-col">
+          <div class="event-name">Fill Eggs for Fundraiser</div>
+          <div class="meta">
+            <span class="tag time">⏰ 5:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card noschool" data-date="2026-04-03" data-title="Good Friday – No School / No Practice" data-start="20260403" data-end="20260404" data-location="" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Fri</div><div class="date-num">3</div></div>
+        <div class="info-col">
+          <div class="event-name">🚫 No School / No Practice – Good Friday</div>
+          <div class="meta"><span class="tag all">ALL teams</span></div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-04-06" data-gametype="home" data-title="SLE JV Softball vs Northville" data-start="20260406T160000" data-end="20260406T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Mon</div><div class="date-num">6</div></div>
+        <div class="info-col">
+          <div class="event-name">Northville HS</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-04-07" data-title="SLE JV Softball: Team Program Dinner" data-start="20260407T170000" data-end="20260407T190000" data-location="Aux Gym Classroom, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Tues</div><div class="date-num">7</div></div>
+        <div class="info-col">
+          <div class="event-name">Team Program Dinner @ School</div>
+          <div class="meta">
+            <span class="tag time">⏰ After Practice</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Aux Gym Classroom</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-04-08" data-gametype="home" data-title="SLE JV Softball vs Walled Lake Central" data-start="20260408T160000" data-end="20260408T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Wed</div><div class="date-num">8</div></div>
+        <div class="info-col">
+          <div class="event-name">Walled Lake Central</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-away" data-date="2026-04-14" data-gametype="away" data-title="SLE JV Softball @ Walled Lake Northern" data-start="20260414T160000" data-end="20260414T190000" data-location="Walled Lake Northern High School, 380 W Pontiac Trail, Commerce Township, MI 48390" data-directions="https://www.google.com/maps/dir/?api=1&destination=Walled+Lake+Northern+High+School,+380+W+Pontiac+Trail,+Commerce+Township,+MI+48390" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Tues</div><div class="date-num">14</div></div>
+        <div class="info-col">
+          <div class="event-name">@ Walled Lake Northern</div>
+          <div class="meta">
+            <span class="tag away">✈️ Away</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 WL Northern HS</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Walled+Lake+Northern+High+School,+380+W+Pontiac+Trail,+Commerce+Township,+MI+48390" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-04-15" data-title="SLE JV Softball: Ethos S&C" data-start="20260415T143000" data-end="20260415T153000" data-location="Weight Room, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Weds</div><div class="date-num">15</div></div>
+        <div class="info-col">
+          <div class="event-name">Ethos S&amp;C Before Prac</div>
+          <div class="meta">
+            <span class="tag time">⏰ 2:30 – 3:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Weight Room</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-04-17" data-gametype="home" data-title="SLE JV Softball vs Dexter JV" data-start="20260417T160000" data-end="20260417T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Fri</div><div class="date-num">17</div></div>
+        <div class="info-col">
+          <div class="event-name">Dexter JV</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-away" data-date="2026-04-18" data-gametype="away" data-title="SLE JV Softball @ Oxford" data-start="20260418T100000" data-end="20260418T130000" data-location="Oxford High School, 745 N Oxford Rd, Oxford, MI 48371" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Sat</div><div class="date-num">18</div></div>
+        <div class="info-col">
+          <div class="event-name">@ Oxford</div>
+          <div class="meta">
+            <span class="tag away">✈️ Away</span>
+            <span class="tag time">⏰ 10:00 AM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Oxford HS</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Oxford+High+School,+745+N+Oxford+Rd,+Oxford,+MI+48371" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-04-20" data-title="SLE JV Softball: Softball Dinner @ The Hotel" data-start="20260420T190000" data-end="20260420T210000" data-location="South Lyon Hotel, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Mon</div><div class="date-num">20</div></div>
+        <div class="info-col">
+          <div class="event-name">🍽️ Softball Dinner @ The Hotel</div>
+          <div class="meta">
+            <span class="tag time">⏰ 7:00 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 South Lyon Hotel</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-04-22" data-title="SLE JV Softball: Ethos S&C" data-start="20260422T143000" data-end="20260422T153000" data-location="Weight Room, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Weds</div><div class="date-num">22</div></div>
+        <div class="info-col">
+          <div class="event-name">Ethos S&amp;C Before Prac</div>
+          <div class="meta">
+            <span class="tag time">⏰ 2:30 – 3:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Weight Room</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-away" data-date="2026-04-22" data-gametype="away" data-title="SLE JV Softball @ Saline" data-start="20260422T160000" data-end="20260422T190000" data-location="Saline High School, 7190 N Maple Rd, Saline, MI 48176" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Weds</div><div class="date-num">22</div></div>
+        <div class="info-col">
+          <div class="event-name">@ Saline</div>
+          <div class="meta">
+            <span class="tag away">✈️ Away</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Saline HS</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Saline+High+School,+7190+N+Maple+Rd,+Saline,+MI+48176" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-away" data-date="2026-04-23" data-gametype="away" data-title="SLE JV Softball @ Brighton" data-start="20260423T160000" data-end="20260423T190000" data-location="Brighton High School, 7878 Brighton Rd, Brighton, MI 48116" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Thurs</div><div class="date-num">23</div></div>
+        <div class="info-col">
+          <div class="event-name">@ Brighton</div>
+          <div class="meta">
+            <span class="tag away">✈️ Away</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Brighton HS</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Brighton+High+School,+7878+Brighton+Rd,+Brighton,+MI+48116" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-04-27" data-gametype="home" data-title="SLE JV Softball vs Howell" data-start="20260427T160000" data-end="20260427T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Mon</div><div class="date-num">27</div></div>
+        <div class="info-col">
+          <div class="event-name">Howell</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-away" data-date="2026-04-28" data-gametype="away" data-title="SLE JV Softball @ Dexter" data-start="20260428T160000" data-end="20260428T190000" data-location="Dexter High School, 2200 N Parker Rd, Dexter, MI 48130" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Tues</div><div class="date-num">28</div></div>
+        <div class="info-col">
+          <div class="event-name">@ Dexter</div>
+          <div class="meta">
+            <span class="tag away">✈️ Away</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Dexter HS</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Dexter+High+School,+2200+N+Parker+Rd,+Dexter,+MI+48130" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-04-29" data-title="SLE JV Softball: Ethos S&C" data-start="20260429T143000" data-end="20260429T153000" data-location="Weight Room, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Weds</div><div class="date-num">29</div></div>
+        <div class="info-col">
+          <div class="event-name">Ethos S&amp;C Before Prac</div>
+          <div class="meta">
+            <span class="tag time">⏰ 2:30 – 3:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Weight Room</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-04-30" data-gametype="home" data-title="SLE JV Softball vs Richmond" data-start="20260430T160000" data-end="20260430T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Thurs</div><div class="date-num">30</div></div>
+        <div class="info-col">
+          <div class="event-name">Richmond</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MAY ===== -->
+<div class="month-section" id="month-may">
+  <div class="month-header">May</div>
+  <div class="cards">
+
+    <div class="card game-home" data-date="2026-05-02" data-gametype="home" data-title="SLE JV Softball: JV Home Round Robin" data-start="20260502T100000" data-end="20260502T140000" data-location="South Lyon East HS – Both Fields, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Sat</div><div class="date-num">2</div></div>
+        <div class="info-col">
+          <div class="event-name">JV Home Round Robin</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 10:00 AM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">3 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS – Both Fields</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-05-06" data-title="SLE JV Softball: Ethos S&C" data-start="20260506T143000" data-end="20260506T153000" data-location="Weight Room, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Weds</div><div class="date-num">6</div></div>
+        <div class="info-col">
+          <div class="event-name">Ethos S&amp;C Before Prac</div>
+          <div class="meta">
+            <span class="tag time">⏰ 2:30 – 3:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Weight Room</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-05-07" data-gametype="home" data-title="SLE JV Softball vs Pinckney" data-start="20260507T160000" data-end="20260507T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Thurs</div><div class="date-num">7</div></div>
+        <div class="info-col">
+          <div class="event-name">Pinckney</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-05-08" data-title="SLE Softball vs Baseball Charity Game" data-start="20260508T180000" data-end="20260508T200000" data-location="South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Fri</div><div class="date-num">8</div></div>
+        <div class="info-col">
+          <div class="event-name">⚾ Softball vs Baseball Charity Game</div>
+          <div class="meta">
+            <span class="tag time">⏰ 6:00 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-05-12" data-gametype="home" data-title="SLE JV Softball vs Lakeland" data-start="20260512T160000" data-end="20260512T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Tues</div><div class="date-num">12</div></div>
+        <div class="info-col">
+          <div class="event-name">Lakeland</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-05-13" data-title="SLE JV Softball: Ethos S&C" data-start="20260513T143000" data-end="20260513T153000" data-location="Weight Room, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Weds</div><div class="date-num">13</div></div>
+        <div class="info-col">
+          <div class="event-name">Ethos S&amp;C Before Prac</div>
+          <div class="meta">
+            <span class="tag time">⏰ 2:30 – 3:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Weight Room</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-away" data-date="2026-05-14" data-gametype="away" data-title="SLE JV Softball @ Livonia Stevenson" data-start="20260514T160000" data-end="20260514T190000" data-location="Stevenson High School, 34200 W 8 Mile Rd, Livonia, MI 48152" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Thurs</div><div class="date-num">14</div></div>
+        <div class="info-col">
+          <div class="event-name">@ Livonia Stevenson</div>
+          <div class="meta">
+            <span class="tag away">✈️ Away</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Livonia Stevenson HS</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Stevenson+High+School,+34200+W+8+Mile+Rd,+Livonia,+MI+48152" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-neutral" data-date="2026-05-16" data-gametype="neutral" data-title="SLE JV Softball: Dexter JV Invite" data-start="20260516T100000" data-end="20260516T150000" data-location="Creekside School, Dexter, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Sat</div><div class="date-num">16</div></div>
+        <div class="info-col">
+          <div class="event-name">Dexter JV Invite</div>
+          <div class="meta">
+            <span class="tag neutral">🏆 Tournament</span>
+            <span class="tag time">⏰ TBD</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">3 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Creekside School</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Creekside+Elementary+School,+Dexter,+MI" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card special" data-date="2026-05-18" data-title="SLE JV Softball: Team Program Dinner" data-start="20260518T170000" data-end="20260518T190000" data-location="Gym Classroom, South Lyon East HS" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Mon</div><div class="date-num">18</div></div>
+        <div class="info-col">
+          <div class="event-name">🍽️ Team Program Dinner</div>
+          <div class="meta">
+            <span class="tag time">⏰ After Practice</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Gym Classroom</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-home" data-date="2026-05-19" data-gametype="home" data-title="SLE JV Softball vs South Lyon" data-start="20260519T160000" data-end="20260519T190000" data-location="South Lyon East HS, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Tues</div><div class="date-num">19</div></div>
+        <div class="info-col">
+          <div class="event-name">South Lyon</div>
+          <div class="meta">
+            <span class="tag home">🏠 Home</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 East HS</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+    <div class="card game-away" data-date="2026-05-20" data-gametype="away" data-title="SLE JV Softball @ Allen Park" data-start="20260520T160000" data-end="20260520T190000" data-location="Allen Park High School, 9601 Vine Ave, Allen Park, MI 48101" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Wed</div><div class="date-num">20</div></div>
+        <div class="info-col">
+          <div class="event-name">@ Allen Park</div>
+          <div class="meta">
+            <span class="tag away">✈️ Away</span>
+            <span class="tag time">⏰ 4:00 PM</span>
+          </div>
+        </div>
+        <div class="right-col"><span class="games-badge">2 Games</span><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Allen Park High</span>
+        <a class="action-btn directions" href="https://www.google.com/maps/dir/?api=1&destination=Allen+Park+High+School,+9601+Vine+Ave,+Allen+Park,+MI+48101" target="_blank">🗺️ Directions</a>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+
+    <div class="card noschool" data-date="2026-05-25" data-title="Memorial Day – No School / No Practice" data-start="20260525" data-end="20260526" data-location="" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Mon</div><div class="date-num">25</div></div>
+        <div class="info-col">
+          <div class="event-name">🚫 No School / No Practice – Memorial Day</div>
+          <div class="meta"><span class="tag all">ALL teams</span></div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== JUNE ===== -->
+<div class="month-section" id="month-june">
+  <div class="month-header">June</div>
+  <div class="cards">
+
+    <div class="card special" data-date="2026-06-02" data-title="SLE JV Softball: End of Season Banquet" data-start="20260602T173000" data-end="20260602T200000" data-location="Tanglewood, South Lyon, MI" onclick="toggleCard(this)">
+      <div class="card-main">
+        <div class="date-col"><div class="dow">Tues</div><div class="date-num">2</div></div>
+        <div class="info-col">
+          <div class="event-name">🎉 End of Season Banquet</div>
+          <div class="meta">
+            <span class="tag time">⏰ 5:30 PM</span>
+            <span class="tag all">ALL teams</span>
+          </div>
+        </div>
+        <div class="right-col"><div class="expand-icon">▼</div></div>
+      </div>
+      <div class="card-actions">
+        <span class="action-btn loc-info">📍 Tanglewood</span>
+        <a class="action-btn calendar" href="#" onclick="openCal(this.closest('.card'));return false;">📅 Add to Calendar</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p class="print-note">2026 South Lyon East Softball — JV Schedule &amp; Events · Tap any card for details</p>
+
+<script>
+  // ── Helpers ──────────────────────────────────────────────────────────────
+  function parseLocalDate(str) {
+    // str like "2026-04-06"
+    const [y, m, d] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  function daysBetween(a, b) {
+    return Math.round((b - a) / 86400000);
+  }
+
+  // ── Toggle card expand ────────────────────────────────────────────────────
+  function toggleCard(card) {
+    card.classList.toggle('expanded');
+  }
+
+  // ── Open Google Calendar ──────────────────────────────────────────────────
+  function openCal(card) {
+    const title    = encodeURIComponent(card.dataset.title || 'SLE JV Softball Event');
+    const start    = card.dataset.start || '';
+    const end      = card.dataset.end   || '';
+    const location = encodeURIComponent(card.dataset.location || '');
+    let dates;
+    if (start.includes('T')) {
+      dates = `${start}/${end}`;
+    } else {
+      // all-day
+      dates = `${start.replace(/-/g,'')}/${end.replace(/-/g,'')}`;
+    }
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&location=${location}`;
+    window.open(url, '_blank');
+  }
+
+  // ── Filter ────────────────────────────────────────────────────────────────
+  function filterCards(type) {
+    document.querySelectorAll('.card').forEach(card => {
+      let show = true;
+      if (type === 'games')  show = card.classList.contains('game-home') || card.classList.contains('game-away') || card.classList.contains('game-neutral');
+      else if (type === 'home')   show = card.classList.contains('game-home');
+      else if (type === 'away')   show = card.classList.contains('game-away') || card.classList.contains('game-neutral');
+      else if (type === 'events') show = card.classList.contains('special') || card.classList.contains('noschool') || card.classList.contains('break');
+      card.style.display = show ? '' : 'none';
+    });
+    // Hide month headers with no visible cards
+    document.querySelectorAll('.month-section').forEach(section => {
+      const visible = [...section.querySelectorAll('.card')].some(c => c.style.display !== 'none');
+      section.style.display = visible ? '' : 'none';
+    });
+    // Active button
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.filter-btn[data-filter="${type}"]`).classList.add('active');
+  }
+
+  // ── Main init ─────────────────────────────────────────────────────────────
+  (function init() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const allCards = [...document.querySelectorAll('.card[data-date]')];
+    const gameCards = allCards.filter(c =>
+      c.classList.contains('game-home') ||
+      c.classList.contains('game-away') ||
+      c.classList.contains('game-neutral')
+    );
+
+    let nextUpCard = null;
+    let nextUpDate = null;
+    let gamesPlayed = 0;
+    const totalGameDays = gameCards.length; // 18
+
+    allCards.forEach(card => {
+      const d = parseLocalDate(card.dataset.date);
+      if (d < today) {
+        card.classList.add('past');
+        if (card.dataset.gametype) gamesPlayed++;
+      } else {
+        if (!nextUpDate || d < nextUpDate) {
+          nextUpDate = d;
+          nextUpCard = card;
+        }
+      }
+    });
+
+    // Stats
+    const gamesRemaining = totalGameDays - gamesPlayed;
+    document.getElementById('stat-played').textContent    = gamesPlayed;
+    document.getElementById('stat-remaining').textContent = gamesRemaining;
+
+    // Progress bar
+    const pct = totalGameDays > 0 ? Math.round((gamesPlayed / totalGameDays) * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = `${gamesPlayed} of ${totalGameDays} game days played`;
+    // Position the softball at the progress percentage, clamped so it stays on the track
+    const ball = document.getElementById('softball-ball');
+    // Use clamp so the ball never falls off either edge
+    ball.style.left = `clamp(15px, calc(${pct}% - 15px), calc(100% - 15px))`;
+
+    // Next Up banner
+    if (nextUpCard) {
+      nextUpCard.classList.add('next-up');
+      // Scroll isn't needed since banner is at top, but we populate it
+      const banner = document.getElementById('next-up-banner');
+      banner.style.display = 'block';
+
+      const name  = nextUpCard.querySelector('.event-name').textContent.trim();
+      const dow   = nextUpCard.querySelector('.dow').textContent.trim();
+      const dateN = nextUpCard.querySelector('.date-num').textContent.trim();
+      const month = nextUpCard.closest('.month-section').querySelector('.month-header').textContent.trim();
+      const timeTag = nextUpCard.querySelector('.tag.time');
+      const timeStr = timeTag ? timeTag.textContent.trim() : '';
+      const locEl = nextUpCard.querySelector('.action-btn.loc-info');
+      const locStr = locEl ? locEl.textContent.trim() : '';
+      const isHome = nextUpCard.classList.contains('game-home');
+      const isAway = nextUpCard.classList.contains('game-away');
+      const isTour = nextUpCard.classList.contains('game-neutral');
+      const typeIcon = isHome ? '🏠' : isAway ? '✈️' : isTour ? '🏆' : '📅';
+
+      document.getElementById('next-up-name').textContent = `${typeIcon} ${name}`;
+      document.getElementById('next-up-meta').innerHTML =
+        `<span>${dow}, ${month} ${dateN}</span>` +
+        (timeStr ? `<span>${timeStr}</span>` : '') +
+        (locStr  ? `<span>${locStr}</span>` : '');
+
+      const days = daysBetween(today, nextUpDate);
+      const countdownEl = document.getElementById('next-up-countdown');
+      if (days === 0)      countdownEl.textContent = '🔥 TODAY!';
+      else if (days === 1) countdownEl.textContent = '⏳ Tomorrow!';
+      else                 countdownEl.textContent = `⏳ ${days} days away`;
+
+      // Scroll the next-up card into view on load (smooth)
+      setTimeout(() => nextUpCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400);
+    } else {
+      // Season over
+      document.getElementById('next-up-banner').style.display = 'block';
+      document.getElementById('next-up-banner').innerHTML =
+        '<div class="next-up-eyebrow">🎉 Season Complete</div>' +
+        '<div class="next-up-name">Great season, Eagles!</div>';
+    }
+  })();
+</script>
+</body>
+</html>
