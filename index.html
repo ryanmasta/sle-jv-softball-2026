@@ -393,7 +393,7 @@
     <div class="stat-label">✈️ Away Games</div>
   </div>
   <div class="stat-pill tourn">
-    <div class="stat-num" id="stat-tourn">1</div>
+    <div class="stat-num" id="stat-tourn">–</div>
     <div class="stat-label">🏆 Tournament</div>
   </div>
 </div>
@@ -903,12 +903,13 @@
   <div class="month-header">May</div>
   <div class="cards">
 
-    <div class="card game-home" data-date="2026-05-02" data-gametype="home" data-title="SLE JV Softball: JV Home Round Robin" data-start="20260502T100000" data-end="20260502T140000" data-location="South Lyon East HS – Both Fields, South Lyon, MI" onclick="toggleCard(this)">
+    <div class="card game-neutral game-home" data-date="2026-05-02" data-gametype="neutral" data-title="SLE JV Softball: JV Home Round Robin" data-start="20260502T100000" data-end="20260502T140000" data-location="South Lyon East HS – Both Fields, South Lyon, MI" onclick="toggleCard(this)">
       <div class="card-main">
         <div class="date-col"><div class="dow">Sat</div><div class="date-num">2</div></div>
         <div class="info-col">
           <div class="event-name">JV Home Round Robin</div>
           <div class="meta">
+            <span class="tag neutral">🏆 Tournament</span>
             <span class="tag home">🏠 Home</span>
             <span class="tag time">⏰ 10:00 AM</span>
           </div>
@@ -1219,13 +1220,23 @@
     let nextUpCard = null;
     let nextUpDate = null;
     let gamesPlayed = 0;
-    const totalGameDays = gameCards.length; // 18
+
+    // Helper: sum badge numbers across a list of cards
+    const sumGames = cards => cards.reduce((total, c) => {
+      const badge = c.querySelector('.games-badge');
+      const n = badge ? parseInt(badge.textContent) : 1;
+      return total + (isNaN(n) ? 1 : n);
+    }, 0);
 
     allCards.forEach(card => {
       const d = parseLocalDate(card.dataset.date);
       if (d < today) {
         card.classList.add('past');
-        if (card.dataset.gametype) gamesPlayed++;
+        if (card.dataset.gametype) {
+          const badge = card.querySelector('.games-badge');
+          const n = badge ? parseInt(badge.textContent) : 1;
+          gamesPlayed += isNaN(n) ? 1 : n;
+        }
       } else {
         if (!nextUpDate || d < nextUpDate) {
           nextUpDate = d;
@@ -1234,19 +1245,17 @@
       }
     });
 
-    // Stats
-    const gamesRemaining = totalGameDays - gamesPlayed;
-    const sumGames = cards => cards.reduce((total, c) => {
-      const badge = c.querySelector('.games-badge');
-      const n = badge ? parseInt(badge.textContent) : 1;
-      return total + (isNaN(n) ? 1 : n);
-    }, 0);
-    const homeGames = sumGames(gameCards.filter(c => c.classList.contains('game-home')));
-    const awayGames = sumGames(gameCards.filter(c => c.classList.contains('game-away')));
+    // Stats — all counts are individual games, not events
+    const homeGames  = sumGames(gameCards.filter(c => c.classList.contains('game-home') && !c.classList.contains('game-neutral')));
+    const awayGames  = sumGames(gameCards.filter(c => c.classList.contains('game-away')));
+    const tournGames = sumGames(gameCards.filter(c => c.classList.contains('game-neutral')));
+    const totalGames = homeGames + awayGames + tournGames;
+    const gamesRemaining = totalGames - gamesPlayed;
     document.getElementById('stat-played').textContent    = gamesPlayed;
     document.getElementById('stat-remaining').textContent = gamesRemaining;
     document.getElementById('stat-home').textContent      = homeGames;
     document.getElementById('stat-away').textContent      = awayGames;
+    document.getElementById('stat-tourn').textContent     = tournGames;
 
     // Progress bar
     const pct = totalGameDays > 0 ? Math.round((gamesPlayed / totalGameDays) * 100) : 0;
