@@ -1298,8 +1298,7 @@
       else if (days === 1) countdownEl.textContent = '⏳ Tomorrow!';
       else                 countdownEl.textContent = `⏳ ${days} days away`;
 
-      // Scroll the next-up card into view on load (smooth)
-      setTimeout(() => nextUpCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400);
+
     } else {
       // Season over
       document.getElementById('next-up-banner').style.display = 'block';
