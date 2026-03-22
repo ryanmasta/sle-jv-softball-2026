@@ -448,6 +448,38 @@
     .cal-modal-actions {
       display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;
     }
+    /* ── Mobile calendar: dots instead of text pills ─────────────────── */
+    @media (max-width: 540px) {
+      .cal-grid { gap: 2px; }
+
+      .cal-day-header { font-size: 0; }
+      .cal-day-header::first-letter { font-size: 0.65rem; }
+
+      .cal-day {
+        min-height: 52px;
+        padding: 3px 2px;
+      }
+      .cal-day-num { font-size: 0.65rem; }
+
+      /* Replace text pills with small colored dots */
+      .cal-pill {
+        display: inline-block;
+        width: 9px; height: 9px;
+        border-radius: 50%;
+        padding: 0; margin: 1px;
+        font-size: 0;          /* hide text */
+        white-space: normal;
+        overflow: visible;
+        vertical-align: middle;
+      }
+      /* Keep background colors, just shaped as dots */
+      .cal-pill.game-home    { background: #38a169; }
+      .cal-pill.game-away    { background: #3182ce; }
+      .cal-pill.game-neutral { background: #805ad5; }
+      .cal-pill.special      { background: #dd6b20; }
+      .cal-pill.noschool     { background: #e53e3e; }
+      .cal-pill.break        { background: #d69e2e; }
+    }
     /* ── END CALENDAR CSS ─────────────────────────────────────────────── */
   </style>
 </head>
