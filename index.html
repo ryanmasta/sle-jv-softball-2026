@@ -175,7 +175,6 @@
     }
     /* ── WEATHER STRIP: remove to undo ── */
     #weather-strip {
-      display: none;
       margin-top: 10px;
       background: rgba(255,255,255,0.1);
       border-radius: 10px;
@@ -560,7 +559,7 @@
   <div class="next-up-meta" id="next-up-meta"></div>
   <div class="next-up-countdown" id="next-up-countdown"></div>
   <!-- ── WEATHER STRIP: remove to undo ── -->
-  <div id="weather-strip"><span class="wx-loading">🌡️ Loading forecast…</span></div>
+  <div id="weather-strip" style="display:none"><span class="wx-loading">🌡️ Loading forecast…</span></div>
   <!-- ── END WEATHER STRIP ── -->
 </div>
 
@@ -1486,7 +1485,8 @@
     const lat  = card.dataset.lat;
     const lon  = card.dataset.lon;
     const date = card.dataset.date;
-    if (!lat || !lon || !date) return;
+    const strip = document.getElementById('weather-strip');
+    if (!lat || !lon || !date) { strip.style.display = 'none'; return; }
 
     // Parse game hour from data-start e.g. "20260406T160000" → 16
     const startStr = card.dataset.start || '';
@@ -1502,7 +1502,6 @@
       return;
     }
 
-    const strip = document.getElementById('weather-strip');
     strip.style.display = 'flex';
     strip.innerHTML = '<span class="wx-loading">🌡️ Loading forecast…</span>';
 
