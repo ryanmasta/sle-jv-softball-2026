@@ -501,6 +501,23 @@
       .cal-pill.noschool     { background: #e53e3e; }
       .cal-pill.break        { background: #d69e2e; }
     }
+    /* ── CALENDAR MODAL WEATHER ── */
+    .cal-modal-weather {
+      margin-top: 14px; padding: 10px 12px;
+      background: #ebf8ff; border-radius: 10px;
+      border: 1px solid #bee3f8;
+    }
+    .cal-wx-label {
+      font-size: 0.68rem; font-weight: 700; color: #2b6cb0;
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px;
+    }
+    .cal-wx-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+    }
+    .cal-wx-icon { font-size: 1.5rem; }
+    .cal-wx-temp { font-size: 1.1rem; font-weight: 800; color: #1a365d; }
+    .cal-wx-desc { font-size: 0.82rem; color: #4a5568; }
+    .cal-wx-details { font-size: 0.75rem; color: #718096; }
     /* ── END CALENDAR CSS ─────────────────────────────────────────────── */
   </style>
 </head>
@@ -1469,74 +1486,95 @@
 
   // ── WEATHER FEATURE: Remove this block to undo ───────────────────────
   function wmoInfo(code) {
-    if (code === 0)               return { icon: '☀️',  desc: 'Clear' };
-    if (code <= 2)                return { icon: '🌤️', desc: 'Mostly Clear' };
-    if (code === 3)               return { icon: '☁️',  desc: 'Overcast' };
-    if (code <= 48)               return { icon: '🌫️', desc: 'Foggy' };
-    if (code <= 57)               return { icon: '🌦️', desc: 'Drizzle' };
-    if (code <= 67)               return { icon: '🌧️', desc: 'Rain' };
-    if (code <= 77)               return { icon: '❄️',  desc: 'Snow' };
-    if (code <= 82)               return { icon: '🌧️', desc: 'Showers' };
-    if (code <= 99)               return { icon: '⛈️',  desc: 'Thunderstorm' };
+    if (code === 0)  return { icon: '☀️',  desc: 'Clear' };
+    if (code <= 2)   return { icon: '🌤️', desc: 'Mostly Clear' };
+    if (code === 3)  return { icon: '☁️',  desc: 'Overcast' };
+    if (code <= 48)  return { icon: '🌫️', desc: 'Foggy' };
+    if (code <= 57)  return { icon: '🌦️', desc: 'Drizzle' };
+    if (code <= 67)  return { icon: '🌧️', desc: 'Rain' };
+    if (code <= 77)  return { icon: '❄️',  desc: 'Snow' };
+    if (code <= 82)  return { icon: '🌧️', desc: 'Showers' };
+    if (code <= 99)  return { icon: '⛈️',  desc: 'Thunderstorm' };
     return { icon: '🌡️', desc: 'Unknown' };
   }
 
-  async function loadWeather(card) {
-    // Fall back to South Lyon East HS coords if event has no specific location
+  function fmtHour(h) {
+    if (h === 0)  return '12:00 AM';
+    if (h < 12)   return `${h}:00 AM`;
+    if (h === 12) return '12:00 PM';
+    return `${h - 12}:00 PM`;
+  }
+
+  // Shared fetch — returns weather object or null
+  async function fetchWeatherData(card) {
     const lat  = card.dataset.lat  || '42.4658';
     const lon  = card.dataset.lon  || '-83.6513';
     const date = card.dataset.date;
-    const strip = document.getElementById('weather-strip');
-    if (!date) { strip.style.display = 'none'; return; }
+    if (!date) return null;
 
-    // Parse game hour from data-start e.g. "20260406T160000" → 16
-    const startStr = card.dataset.start || '';
+    const startStr  = card.dataset.start || '';
     const hourMatch = startStr.match(/T(\d{2})/);
-    const gameHour = hourMatch ? parseInt(hourMatch[1]) : 16;
+    const gameHour  = hourMatch ? parseInt(hourMatch[1]) : 12;
 
-    // Only show forecast if game is within 16 days
     const gameDate = new Date(date + 'T00:00:00');
     const today    = new Date(); today.setHours(0,0,0,0);
     const daysAway = Math.round((gameDate - today) / 86400000);
-    if (daysAway < 0 || daysAway > 14) {
-      document.getElementById('weather-strip').style.display = 'none';
-      return;
-    }
-
-    strip.style.display = 'flex';
-    strip.innerHTML = '<span class="wx-loading">🌡️ Loading forecast…</span>';
+    if (daysAway < 0 || daysAway > 14) return null;
 
     try {
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
         `&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m` +
         `&temperature_unit=fahrenheit&wind_speed_unit=mph` +
         `&timezone=America%2FDetroit&start_date=${date}&end_date=${date}`;
-
       const res  = await fetch(url);
       const data = await res.json();
-      if (!data.hourly || !data.hourly.time) throw new Error('No data');
+      if (!data.hourly || !data.hourly.time) return null;
 
-      // Find the hourly slot closest to game time
       let idx = data.hourly.time.findIndex(t => new Date(t).getHours() >= gameHour);
-      if (idx < 0) idx = gameHour; // fallback
+      if (idx < 0) idx = gameHour;
 
-      const temp   = Math.round(data.hourly.temperature_2m[idx]);
-      const precip = data.hourly.precipitation_probability[idx];
-      const code   = data.hourly.weathercode[idx];
-      const wind   = Math.round(data.hourly.windspeed_10m[idx]);
-      const { icon, desc } = wmoInfo(code);
+      return {
+        temp:  Math.round(data.hourly.temperature_2m[idx]),
+        precip: data.hourly.precipitation_probability[idx],
+        code:  data.hourly.weathercode[idx],
+        wind:  Math.round(data.hourly.windspeed_10m[idx]),
+        hour:  gameHour,
+      };
+    } catch(e) { return null; }
+  }
 
-      strip.innerHTML =
-        `<div class="wx-icon">${icon}</div>` +
-        `<div class="wx-temp">${temp}°F</div>` +
-        `<div class="wx-desc">${desc}</div>` +
-        `<div class="wx-detail">` +
-          `<span>💧 ${precip}% chance of rain</span>` +
-          `<span>💨 Wind ${wind} mph</span>` +
-        `</div>`;
-    } catch(e) {
-      strip.style.display = 'none';
-    }
+  // Next Up banner weather
+  async function loadWeather(card) {
+    const strip = document.getElementById('weather-strip');
+    strip.style.display = 'flex';
+    strip.innerHTML = '<span class="wx-loading">🌡️ Loading forecast…</span>';
+    const wx = await fetchWeatherData(card);
+    if (!wx) { strip.style.display = 'none'; return; }
+    const { icon, desc } = wmoInfo(wx.code);
+    strip.innerHTML =
+      `<div class="wx-icon">${icon}</div>` +
+      `<div class="wx-temp">${wx.temp}°F</div>` +
+      `<div class="wx-desc">${desc}</div>` +
+      `<div class="wx-detail">` +
+        `<span>💧 ${wx.precip}% chance of rain</span>` +
+        `<span>💨 Wind ${wx.wind} mph</span>` +
+      `</div>`;
+  }
+
+  // Calendar modal weather
+  async function attachWeatherToModal(card, el) {
+    const wx = await fetchWeatherData(card);
+    if (!wx) { el.style.display = 'none'; return; }
+    const { icon, desc } = wmoInfo(wx.code);
+    el.style.display = 'block';
+    el.innerHTML =
+      `<div class="cal-wx-label">🌡️ Forecast at ${fmtHour(wx.hour)}</div>` +
+      `<div class="cal-wx-row">` +
+        `<span class="cal-wx-icon">${icon}</span>` +
+        `<span class="cal-wx-temp">${wx.temp}°F</span>` +
+        `<span class="cal-wx-desc">${desc}</span>` +
+      `</div>` +
+      `<div class="cal-wx-details">💧 ${wx.precip}% rain · 💨 ${wx.wind} mph</div>`;
   }
   // ── END WEATHER FEATURE ───────────────────────────────────────────────
 
@@ -1718,9 +1756,19 @@
     calA.addEventListener('click', e => { e.preventDefault(); openCal(card); });
     actions.appendChild(calA);
 
+    // Weather section (async — appended after modal is in DOM)
+    const wxEl = document.createElement('div');
+    wxEl.className = 'cal-modal-weather';
+    wxEl.style.display = 'none';
+    wxEl.innerHTML = '<div class="cal-wx-label">🌡️ Loading forecast…</div>';
+    modal.appendChild(wxEl);
+
     modal.appendChild(actions);
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
+
+    // Fetch and render weather after modal is rendered
+    attachWeatherToModal(card, wxEl);
   }
   // ── END CALENDAR VIEW FUNCTIONS ───────────────────────────────────────
 </script>
