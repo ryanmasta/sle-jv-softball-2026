@@ -1482,11 +1482,12 @@
   }
 
   async function loadWeather(card) {
-    const lat  = card.dataset.lat;
-    const lon  = card.dataset.lon;
+    // Fall back to South Lyon East HS coords if event has no specific location
+    const lat  = card.dataset.lat  || '42.4658';
+    const lon  = card.dataset.lon  || '-83.6513';
     const date = card.dataset.date;
     const strip = document.getElementById('weather-strip');
-    if (!lat || !lon || !date) { strip.style.display = 'none'; return; }
+    if (!date) { strip.style.display = 'none'; return; }
 
     // Parse game hour from data-start e.g. "20260406T160000" → 16
     const startStr = card.dataset.start || '';
