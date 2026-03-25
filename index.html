@@ -1563,10 +1563,27 @@
 
   // Calendar modal weather
   async function attachWeatherToModal(card, el) {
-    const wx = await fetchWeatherData(card);
-    if (!wx) { el.style.display = 'none'; return; }
-    const { icon, desc } = wmoInfo(wx.code);
+    // Hide section entirely for past events
+    const date = card.dataset.date;
+    if (date) {
+      const gameDate = new Date(date + 'T00:00:00');
+      const today = new Date(); today.setHours(0,0,0,0);
+      if (gameDate < today) { el.style.display = 'none'; return; }
+    }
+    // Show loading while we fetch
     el.style.display = 'block';
+    const wx = await fetchWeatherData(card);
+    if (!wx) {
+      el.innerHTML =
+        `<div class="cal-wx-label">🌡️ Weather Forecast</div>` +
+        `<div class="cal-wx-details" style="color:#718096">` +
+          (date && (() => { const d=new Date(date+'T00:00:00'),t=new Date();t.setHours(0,0,0,0); return Math.round((d-t)/86400000); })() > 14
+            ? 'Forecast available within 14 days of the game.'
+            : 'Forecast unavailable — check back closer to game day.') +
+        `</div>`;
+      return;
+    }
+    const { icon, desc } = wmoInfo(wx.code);
     el.innerHTML =
       `<div class="cal-wx-label">🌡️ Forecast at ${fmtHour(wx.hour)}</div>` +
       `<div class="cal-wx-row">` +
@@ -1759,8 +1776,7 @@
     // Weather section (async — appended after modal is in DOM)
     const wxEl = document.createElement('div');
     wxEl.className = 'cal-modal-weather';
-    wxEl.style.display = 'none';
-    wxEl.innerHTML = '<div class="cal-wx-label">🌡️ Loading forecast…</div>';
+    wxEl.innerHTML = '<div class="cal-wx-label">🌡️ Weather Forecast</div><div class="cal-wx-details" style="color:#718096">Loading…</div>';
     modal.appendChild(wxEl);
 
     modal.appendChild(actions);
