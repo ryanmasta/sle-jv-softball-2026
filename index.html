@@ -184,6 +184,8 @@
       gap: 14px;
       flex-wrap: wrap;
     }
+    .wx-date-label { font-size: 0.68rem; font-weight: 700; color: #90cdf4; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; }
+    .wx-main-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .wx-icon { font-size: 1.6rem; line-height: 1; }
     .wx-temp { font-size: 1.2rem; font-weight: 800; color: #fff; }
     .wx-desc { font-size: 0.78rem; color: #bee3f8; }
@@ -192,6 +194,22 @@
       display: flex; flex-direction: column; gap: 1px;
     }
     .wx-loading { font-size: 0.78rem; color: #90cdf4; font-style: italic; }
+    /* Card weather (list view expanded) */
+    .card-weather {
+      margin: 8px 12px 4px;
+      padding: 8px 12px;
+      background: #ebf8ff;
+      border-radius: 10px;
+      border: 1px solid #bee3f8;
+      display: none;
+    }
+    .card.expanded .card-weather { display: block; }
+    .card-wx-label { font-size: 0.65rem; font-weight: 700; color: #2b6cb0; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 5px; }
+    .card-wx-row { display: flex; align-items: center; gap: 7px; margin-bottom: 3px; }
+    .card-wx-icon { font-size: 1.2rem; }
+    .card-wx-temp { font-size: 1rem; font-weight: 800; color: #1a365d; }
+    .card-wx-desc { font-size: 0.78rem; color: #4a5568; }
+    .card-wx-details { font-size: 0.72rem; color: #718096; }
     /* ── END WEATHER STRIP CSS ── */
 
     .next-up-countdown {
@@ -1340,6 +1358,41 @@
   // ── Toggle card expand ────────────────────────────────────────────────────
   function toggleCard(card) {
     card.classList.toggle('expanded');
+    // ── CARD WEATHER: inject forecast on first expand ──
+    if (card.classList.contains('expanded') && !card.dataset.wxLoaded) {
+      card.dataset.wxLoaded = '1';
+      // Insert weather div before card-actions
+      const wxDiv = document.createElement('div');
+      wxDiv.className = 'card-weather';
+      const dateLabel = card.dataset.date
+        ? new Date(card.dataset.date + 'T00:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' })
+        : '';
+      wxDiv.innerHTML = `<div class="card-wx-label">🌡️ ${dateLabel ? 'Forecast for ' + dateLabel : 'Weather Forecast'}</div><div class="card-wx-details" style="color:#a0aec0">Loading…</div>`;
+      const actions = card.querySelector('.card-actions');
+      if (actions) card.insertBefore(wxDiv, actions);
+      else card.appendChild(wxDiv);
+      // Async fill
+      (async () => {
+        const date = card.dataset.date;
+        if (date) {
+          const gd = new Date(date + 'T00:00:00'), today = new Date(); today.setHours(0,0,0,0);
+          if (gd < today) { wxDiv.style.display = 'none'; return; }
+        }
+        const wx = await fetchWeatherData(card);
+        if (!wx) {
+          const daysOut = card.dataset.date ? Math.round((new Date(card.dataset.date+'T00:00:00') - new Date().setHours(0,0,0,0)) / 86400000) : 99;
+          wxDiv.innerHTML = `<div class="card-wx-label">🌡️ ${dateLabel ? 'Forecast for ' + dateLabel : 'Weather Forecast'}</div>` +
+            `<div class="card-wx-details" style="color:#a0aec0">${daysOut > 14 ? 'Available within 14 days of event.' : 'Forecast unavailable — check back closer to the day.'}</div>`;
+          return;
+        }
+        const { icon, desc } = wmoInfo(wx.code);
+        wxDiv.innerHTML =
+          `<div class="card-wx-label">🌡️ ${dateLabel ? 'Forecast for ' + dateLabel : 'Weather Forecast'} · ${fmtHour(wx.hour)}</div>` +
+          `<div class="card-wx-row"><span class="card-wx-icon">${icon}</span><span class="card-wx-temp">${wx.temp}°F</span><span class="card-wx-desc">${desc}</span></div>` +
+          `<div class="card-wx-details">💧 ${wx.precip}% chance of rain · 💨 ${wx.wind} mph</div>`;
+      })();
+    }
+    // ── END CARD WEATHER ──
   }
 
   // ── Open Google Calendar ──────────────────────────────────────────────────
@@ -1551,13 +1604,20 @@
     const wx = await fetchWeatherData(card);
     if (!wx) { strip.style.display = 'none'; return; }
     const { icon, desc } = wmoInfo(wx.code);
+    // Format the event date as a friendly label
+    const dateLabel = card.dataset.date
+      ? new Date(card.dataset.date + 'T00:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' })
+      : '';
     strip.innerHTML =
-      `<div class="wx-icon">${icon}</div>` +
-      `<div class="wx-temp">${wx.temp}°F</div>` +
-      `<div class="wx-desc">${desc}</div>` +
-      `<div class="wx-detail">` +
-        `<span>💧 ${wx.precip}% chance of rain</span>` +
-        `<span>💨 Wind ${wx.wind} mph</span>` +
+      `<div class="wx-date-label">📅 Forecast for ${dateLabel}</div>` +
+      `<div class="wx-main-row">` +
+        `<div class="wx-icon">${icon}</div>` +
+        `<div class="wx-temp">${wx.temp}°F</div>` +
+        `<div class="wx-desc">${desc}</div>` +
+        `<div class="wx-detail">` +
+          `<span>💧 ${wx.precip}% chance of rain</span>` +
+          `<span>💨 Wind ${wx.wind} mph</span>` +
+        `</div>` +
       `</div>`;
   }
 
